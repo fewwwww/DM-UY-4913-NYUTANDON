@@ -47,3 +47,18 @@ const i: string & number;
 // type
 type GenericPoint = Point2D | Point3D;
 ```
+
+## Pixi.js
+
+### Scenegraph
+
+a way of organizing project where every object is a child or parent of another object.
+
+### Graphics
+
+```js
+let graphics = new PIXI.Graphics();
+graphics.lineStyle(...)
+graphics.beginFill(...)
+graphics.drawCircle(...)
+```
