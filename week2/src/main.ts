@@ -1,9 +1,10 @@
 import * as PIXI from 'pixi.js';
-import { AnimatedSprite } from 'pixi.js';
+
+const baseUrl = 'https://fewwwww.github.io/DM-UY-4913-NYUTANDON/'
 
 const load = (app: PIXI.Application) => {
   return new Promise<void>((resolve) => {
-    app.loader.add('./assets/metal.jpeg').load(() => {
+    app.loader.add('./assets/metal0.jpg').load(() => {
       resolve();
     });
   });
@@ -92,28 +93,28 @@ const main = async () => {
 
   const center: any = new PIXI.Point(window.innerWidth / 2, window.innerHeight / 2);
 
-  const texture0 = PIXI.Texture.from('./assets/metal0.jpg');
+  const texture0 = PIXI.Texture.from(baseUrl + 'week2/assets/metal0.jpg');
   const tilingSprite0 = new PIXI.TilingSprite(
     texture0,
     window.innerWidth,
     window.innerHeight,
   );
 
-  const texture1 = PIXI.Texture.from('./assets/metal1.jpeg');
+  const texture1 = PIXI.Texture.from(baseUrl + 'week2/assets/metal1.jpeg');
   const tilingSprite1 = new PIXI.TilingSprite(
     texture1,
     window.innerWidth,
     window.innerHeight,
   );
 
-  const texture2 = PIXI.Texture.from('./assets/metal2.jpeg');
+  const texture2 = PIXI.Texture.from(baseUrl + 'week2/assets/metal2.jpeg');
   const tilingSprite2 = new PIXI.TilingSprite(
     texture2,
     window.innerWidth,
     window.innerHeight,
   );
 
-  const texture3 = PIXI.Texture.from('./assets/metal3.jpeg');
+  const texture3 = PIXI.Texture.from(baseUrl + 'week2/assets/metal3.jpeg');
   const tilingSprite3 = new PIXI.TilingSprite(
     texture3,
     window.innerWidth,
