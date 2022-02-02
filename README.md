@@ -62,3 +62,17 @@ graphics.lineStyle(...)
 graphics.beginFill(...)
 graphics.drawCircle(...)
 ```
+
+### Container
+
+contain children for managing
+
+```js
+let container = new PIXI.Container();
+container.x = ...
+container.y = ...
+app.stage.container(container)
+container.addChild(...)
+```
+
+### Shader & Filters
