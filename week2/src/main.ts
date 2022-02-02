@@ -1,12 +1,17 @@
 import * as PIXI from 'pixi.js';
 
-const baseUrl = 'https://fewwwww.github.io/DM-UY-4913-NYUTANDON/'
+const baseUrl = 'https://fewwwww.github.io/DM-UY-4913-NYUTANDON/';
 
 const load = (app: PIXI.Application) => {
   return new Promise<void>((resolve) => {
-    app.loader.add('./assets/metal0.jpg').load(() => {
-      resolve();
-    });
+    app.loader
+      .add('metal0', 'assets/metal0.jpg')
+      .add('metal1', 'assets/metal1.jpeg')
+      .add('metal2', 'assets/metal2.jpeg')
+      .add('metal3', 'assets/metal3.jpeg')
+      .load(() => {
+        resolve();
+      });
   });
 };
 
@@ -91,7 +96,10 @@ const main = async () => {
   // Load assets
   await load(app);
 
-  const center: any = new PIXI.Point(window.innerWidth / 2, window.innerHeight / 2);
+  const center: any = new PIXI.Point(
+    window.innerWidth / 2,
+    window.innerHeight / 2,
+  );
 
   const texture0 = PIXI.Texture.from(baseUrl + 'week2/assets/metal0.jpg');
   const tilingSprite0 = new PIXI.TilingSprite(
