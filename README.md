@@ -76,3 +76,38 @@ container.addChild(...)
 ```
 
 ### Shader & Filters
+
+### Interaction
+
+```js
+{sprite}.on('eventname', callback)
+
+let button = new PIXI.Graphics();
+button.interactive = true;
+button.buttonMode = true;
+button.beginFill(0x0000ff);
+button.drawRoundedRect(100, 100, 200, 100, 15);
+  button.on('pointerdown', () => {
+    ...
+  });
+  button.on('pointerup', () => {
+    ...
+  })
+  button.on('pointerover', () => {
+    ...
+  });
+  button.on('pointerout', () => {
+    ...
+  })
+```
+
+### GUI
+
+Using dat.GUI
+
+```js
+const gui = new dat.GUI();
+
+gui.add(buttonData, 'width', 0, 500)
+...
+```
