@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js';
 import * as dat from 'dat.gui';
 import { Application } from 'pixi.js';
+import TWEEN from '@tweenjs/tween.js'
+import { Easing } from '@tweenjs/tween.js';
 
 const baseUrl = 'https://fewwwww.github.io/DM-UY-4913-NYUTANDON/';
 
@@ -33,7 +35,7 @@ const state = {};
 
 const main = async () => {
   // Actual app
-  let app = new PIXI.Application({ backgroundColor: 0xf2f0ff });
+  let app = new PIXI.Application({ backgroundColor: 0xf2f0ff, antialias: true });
   // Display application properly
   document.body.style.margin = '0';
   app.renderer.view.style.position = 'absolute';
@@ -55,26 +57,58 @@ const main = async () => {
   document.body.appendChild(app.view);
 
   let context = {
-    velocity: { x: 1, y: 1 },
+    //   velocity: { x: 1, y: 1 },
     //   sprite
   };
 
   app.ticker.add(update, context);
 
   setInterval(() => {
-    beat();
-    const graphics = drawClock();
+    const graphics = drawCircle();
     app.stage.addChild(graphics);
   }, 1000)
 };
 
-const beat = () => {
-  const body = document.getElementsByTagName('body')[0];
-  body.style.filter = 'blur(1px) hue-rotate(90deg)';
-  setTimeout(() => {
-    body.style.filter = 'hue-rotate(0deg)';
-  }, 300)
-};
+const drawCircle = () => {
+  let time = getTime();
+
+  let scaleDimension: string;
+  (Math.random() > 0.5) ? scaleDimension = 'x' : 'y';
+  let scaleSize0 = Math.random() * 0.1 + 1;
+  let scaleSize1 = Math.random() * 0.05 + 1;
+
+  const graphics = new PIXI.Graphics();
+  let fillColor = '0x';
+  // i * n should be smaller than ff, which is 255.
+  fillColor += extendString(String(time.hour * 9));
+  fillColor += extendString(String(time.minute));
+  fillColor += extendString(String(time.date * 3));
+  graphics.beginFill(Number(fillColor));
+  graphics.drawCircle(window.innerWidth / 2, window.innerHeight / 2, calcRadius(time));
+  graphics.pivot.set(window.innerWidth / 2, window.innerHeight / 2);
+  graphics.position.set(window.innerWidth / 2, window.innerHeight / 2);
+
+  const beat = () => {
+    const body = document.getElementsByTagName('body')[0];
+    body.style.filter = 'hue-rotate(90deg)';
+    if (scaleDimension === 'x') {
+      graphics.scale.set(scaleSize0, scaleSize1)
+    } else {
+      graphics.scale.set(scaleSize1, scaleSize0)
+    }
+    setTimeout(() => {
+      body.style.filter = 'hue-rotate(0deg)';
+      graphics.scale.set(1, 1)
+    }, 300)
+  };
+
+  beat();
+  return graphics;
+}
+
+const calcRadius = (time: any) => {
+  return (time.hour + time.minute / 60) / 24 * window.innerWidth / 1.2;
+}
 
 const drawClock = () => {
   let time = getTime();

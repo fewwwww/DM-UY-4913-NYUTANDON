@@ -105,9 +105,19 @@ button.drawRoundedRect(100, 100, 200, 100, 15);
 
 Using dat.GUI
 
+Should be 'addChild' at the same level as app
+
 ```js
 const gui = new dat.GUI();
 
 gui.add(buttonData, 'width', 0, 500)
 ...
 ```
+
+### MVC
+
+control (update) updates model (data)
+model (data) informs view (display)
+view (display) notifies control (update)
+
+Data vs Behavior
