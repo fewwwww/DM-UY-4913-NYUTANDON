@@ -121,3 +121,37 @@ model (data) informs view (display)
 view (display) notifies control (update)
 
 Data vs Behavior
+
+### Animation
+
+sin/cos of time
+
+```js
+// circling
+this.sprite.x = window.innerWidth/2 + Math.cos(this.model.elapsedTime)
+this.sprite.y = window.innerHeight/2 + Math.sin(this.model.elapsedTime)
+
+//
+this.sprite.scale.set(Math.cos(this.model.elapsedTime * 0.05) * 0.5, ...)
+this.sprite.alpha = (Math.cos(this.model.elapsedTime * 0.125) + 1) * 0.5
+```
+
+#### Linear Interpolation / LERP-ING
+
+Time = % between 0 and 1
+
+```ts
+// a: start, b: end, pct: "speed"
+function lerp(a: number, b: number, pct: number): number {
+  pct = Math.min(1, Math.max(0, pct))
+  return a * (1 - pct) + b * pct;
+}
+function easeIn(t: number): number {
+  return t * t;
+}
+this.sprite.y = lerp(this.sprite.y, window.innerHeight, 0.01)
+this.sprite.y = lerp(this.sprite.y, this.model.mousePos.y, 0.01)
+```
+
+#### GreenSock Animation Platform
+
