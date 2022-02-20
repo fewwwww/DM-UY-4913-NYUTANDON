@@ -15,27 +15,14 @@ const load = (app: PIXI.Application) => {
   });
 };
 
-const getTime = () => {
-  const time = new Date();
-  return {
-    date: time.getDate(),
-    hour: time.getHours(),
-    minute: time.getMinutes(),
-  };
-};
-
-const extendString = (str: String) => {
-  if (str.length < 2) {
-    return '0' + str;
-  }
-  return str;
-};
-
 const state = {};
 
 let graphics: Array<PIXI.Graphics> = [];
 let sizes: any = [];
 let colors: any = [];
+let heights: any = [];
+let squareHeight = window.innerHeight / 30;
+let gapHeight = window.innerHeight / 30 / 2;
 
 const main = async () => {
   // Actual app
@@ -60,18 +47,19 @@ const main = async () => {
   });
   document.body.appendChild(app.view);
 
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 20; i++) {
     const element = new PIXI.Graphics();
-    element.x = window.innerWidth / 2;
-    element.y = window.innerHeight / 2;
-    element.x += 50 * Math.sin(i) * Math.PI;
-    element.y += 50 * Math.cos(i) * Math.PI;
+    element.x = 0;
+    element.y = i * (squareHeight + gapHeight);
     graphics.push(element);
     sizes[i] = {
-      value: 100,
+      value: 0,
     };
     colors[i] = {
-      value: 0xffffff,
+      value: 0x93b5cf,
+    };
+    heights[i] = {
+      value: squareHeight,
     };
     app.stage.addChild(element);
   }
@@ -81,12 +69,10 @@ const main = async () => {
     graphics,
   };
 
-  sizes.forEach((size: any, i: number) => {
-    t1.to(sizes[i], { value: 200, duration: 3 });
-    t1.to(colors[i], { value: 0xffffff * Math.random(), duration: 0.001 });
-    t1.to(sizes[i], { value: 100, duration: 3 });
-    t1.to(colors[i], { value: 0xffffff * Math.random(), duration: 0.001 });
-  });
+  // sizes.forEach((size: any, i: number) => {
+  //   t1.to(sizes[i], { value: window.innerWidth}, '+=1');
+  //   t1.to(sizes[i], { value: 0});
+  // });
 
   app.ticker.add(update, context);
 };
@@ -100,9 +86,40 @@ function update(this: any, delta: number) {
   this.graphics.forEach((element: PIXI.Graphics, i: number) => {
     element.clear();
     element.beginFill(colors[i].value);
-    element.drawCircle(0, 0, sizes[i].value);
+    element.drawRect(0, 0, sizes[i].value, heights[i].value);
   });
-  t1.to(colors, { value: 0xffffff * Math.random(), duration: 1 });
+  t1.to(sizes, { value: window.innerWidth, duration: 1 });
+  t1.to(colors, { value: 0xffffff * Math.random(), duration: 0.001 });
+  t1.to(heights, { value: 3 * squareHeight, duration: 1 });
+  t1.to(heights, { value: squareHeight, duration: 1 });
+  t1.to(sizes, { value: 0, duration: 1 });
+  for (let i = 0; i < sizes.length; i++) {
+    t1.to(sizes[i], { value: window.innerWidth, duration: 0.5 }, '<2%');
+    t1.to(sizes[i], { value: 0, duration: 5 }, '>10%');
+  }
+  t1.to(sizes, { value: window.innerWidth, duration: 1 });
+  t1.to(colors, { value: 0xffffff * Math.random(), duration: 0.001 });
+  t1.to(heights, { value: 3 * squareHeight, duration: 1 });
+  t1.to(heights, { value: squareHeight, duration: 1 });
+  t1.to(sizes, { value: 0, duration: 1 });
+  for (let i = sizes.length; i > 0; i--) {
+    t1.to(sizes[i], { value: window.innerWidth, duration: 0.5 }, '<2%');
+    t1.to(sizes[i], { value: 0, duration: 5 }, '>10%');
+  }
+  t1.to(sizes, { value: window.innerWidth, duration: 1 });
+  t1.to(colors, { value: 0xffffff * Math.random(), duration: 0.001 });
+  t1.to(heights, { value: 3 * squareHeight, duration: 1 });
+  t1.to(heights, { value: squareHeight, duration: 1 });
+  t1.to(sizes, { value: 0, duration: 1 });
+  for (let i = 0; i < sizes.length; i++) {
+    t1.to(sizes[i], { value: window.innerWidth, duration: 0.5 }, '<2%');
+    t1.to(sizes[i], { value: 0, duration: 5 }, '>10%');
+  }
+  t1.to(sizes, { value: window.innerWidth, duration: 1 });
+  t1.to(colors, { value: 0xffffff * Math.random(), duration: 0.001 });
+  t1.to(heights, { value: 3 * squareHeight, duration: 1 });
+  t1.to(heights, { value: squareHeight, duration: 1 });
+  t1.to(sizes, { value: 0, duration: 1 });
 }
 
 main();
