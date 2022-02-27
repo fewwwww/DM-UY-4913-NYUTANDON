@@ -155,4 +155,15 @@ this.sprite.y = lerp(this.sprite.y, this.model.mousePos.y, 0.01)
 
 #### GreenSock Animation Platform
 
-TWEEN/GreenSock/
+TWEEN/GreenSock
+
+## Electron
+
+### Current workflow
+
+Electron + Vite
+
+```js
+mainWindow.webContents.send(colod)
+mainWindow.webContents.openDevTools()
+```
