@@ -167,3 +167,9 @@ Electron + Vite
 mainWindow.webContents.send(colod)
 mainWindow.webContents.openDevTools()
 ```
+
+## Serial
+
+Button, LED <-> Arduino <-> Serial <-> Node.js
+
+Use Johnny-Five lib

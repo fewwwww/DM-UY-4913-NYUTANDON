@@ -16,6 +16,8 @@ Your goal is finding waldos🔍 in 5 minutes⏱️!
 5. Look at🧐 the drawing for a while to appreciate the art. (you only have 5 minutes to find all of them!
 6. Click🖱️ to go on to another map.
 
+> You can also take screenshot with right click enabled by `@xata.io/screenshot`! The screenshot will appear on the top left corner. Click it to remove it.
+
 ## Knowledge behind that game
 ---
 

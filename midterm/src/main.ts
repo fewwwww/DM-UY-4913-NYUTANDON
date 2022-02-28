@@ -7,7 +7,8 @@ import {
   ParticleContainer,
 } from 'pixi.js';
 import gsap from 'gsap';
-import {waldos} from './waldo'
+import { waldos } from './waldo';
+import { takeScreenshot, checkIfBrowserSupported } from '@xata.io/screenshot';
 
 let t1 = gsap.timeline();
 
@@ -86,9 +87,7 @@ const main = async () => {
   });
 
   // load the first find waldo map
-  const waldo = PIXI.Texture.from(
-    waldos[waldoIndex],
-  );
+  const waldo = PIXI.Texture.from(waldos[waldoIndex]);
   const waldoMask = new PIXI.TilingSprite(
     waldo,
     window.innerWidth,
@@ -102,36 +101,34 @@ const main = async () => {
   // make stage interactive
   app.stage.interactive = true;
   // if clicked (wont work after 5 minutes, times up!)
-  app.stage.on('pointerdown', () => {
+  app.stage.on('mousedown', () => {
     // disable moving 🔍
     if (mouseCount === 0) {
       mouse.interactive = false;
     }
     // reveal horizontal line
     if (mouseCount === 1) {
-      mouse.scale.x = window.innerWidth
+      mouse.scale.x = window.innerWidth;
     }
     // reveal vertical line
     if (mouseCount === 2) {
-      mouse.scale.x = 1
-      mouse.scale.y = window.innerHeight
+      mouse.scale.x = 1;
+      mouse.scale.y = window.innerHeight;
     }
     // reveal whole map
     if (mouseCount === 3) {
-      mouse.scale.x = window.innerWidth
+      mouse.scale.x = window.innerWidth;
     }
     // go on to another map!
     if (mouseCount === 4) {
-      waldoIndex += 1
+      waldoIndex += 1;
       // go back to first map
       if (waldoIndex > waldos.length - 1) {
         waldoIndex = 0;
       }
 
       // load new map
-      const waldoNew = PIXI.Texture.from(
-        waldos[waldoIndex]
-      );
+      const waldoNew = PIXI.Texture.from(waldos[waldoIndex]);
       const waldoMaskNew = new PIXI.TilingSprite(
         waldoNew,
         window.innerWidth,
@@ -143,10 +140,40 @@ const main = async () => {
     mouseCount += 1;
     // make 🔍 normal
     if (mouseCount > 4) {
-      mouseCount = 0
-      mouse.interactive = true
-      mouse.scale.x = 1
-      mouse.scale.y = 1
+      mouseCount = 0;
+      mouse.interactive = true;
+      mouse.scale.x = 1;
+      mouse.scale.y = 1;
+    }
+  });
+
+  // take screen shots!
+  app.stage.on('rightdown', () => {
+    // if browser supports
+    if (checkIfBrowserSupported()) {
+      // take a screen shot
+      takeScreenshot().then((screenShot) => {
+        // generate a shot with base64 string of screenShot
+        const shot = PIXI.Texture.from(screenShot);
+        const shotSprite = new PIXI.TilingSprite(
+          shot,
+          window.innerWidth,
+          window.innerHeight,
+        );
+        // tint it a little bit to make difference
+        shotSprite.tint = 0xeeeeee;
+        shotSprite.scale.x = 0.3;
+        shotSprite.scale.y = 0.3;
+        app.stage.addChild(shotSprite);
+        shotSprite.interactive = true;
+        // click it to remove it
+        shotSprite.on('mousedown', () => {
+          shotSprite.scale.x = 0;
+          shotSprite.scale.y = 0;
+          // make it not interfere with our 🔍
+          mouseCount -= 1;
+        });
+      });
     }
   });
 
