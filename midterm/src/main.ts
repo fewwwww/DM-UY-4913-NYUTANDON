@@ -78,12 +78,12 @@ const main = async () => {
   // draw little 🔍
   const mouse = new PIXI.Graphics();
   mouse.beginFill(0xe9ccd3);
-  mouse.drawCircle(0, 0, 30);
+  mouse.drawCircle(0, 0, window.innerWidth * 2);
   mouse.endFill();
   mouse.interactive = true;
   mouse.on('mousemove', function (event) {
-    mouse.x = event.data.global.x + 40;
-    mouse.y = event.data.global.y + 40;
+    mouse.x = event.data.global.x + window.innerWidth * 0.03;
+    mouse.y = event.data.global.y + window.innerWidth * 0.03;
   });
 
   // load the first find waldo map
@@ -102,22 +102,25 @@ const main = async () => {
   app.stage.interactive = true;
   // if clicked (wont work after 5 minutes, times up!)
   app.stage.on('mousedown', () => {
-    // disable moving 🔍
+    // start 🔍
     if (mouseCount === 0) {
-      mouse.interactive = false;
+      mouse.scale.x = 0.01;
+      mouse.scale.y = 0.01;
     }
     // reveal horizontal line
+    // disable moving 🔍
     if (mouseCount === 1) {
-      mouse.scale.x = window.innerWidth;
+      mouse.interactive = false;
+      mouse.scale.x = 1;
     }
     // reveal vertical line
     if (mouseCount === 2) {
-      mouse.scale.x = 1;
-      mouse.scale.y = window.innerHeight;
+      mouse.scale.x = 0.01;
+      mouse.scale.y = 1;
     }
     // reveal whole map
     if (mouseCount === 3) {
-      mouse.scale.x = window.innerWidth;
+      mouse.scale.x = 1;
     }
     // go on to another map!
     if (mouseCount === 4) {

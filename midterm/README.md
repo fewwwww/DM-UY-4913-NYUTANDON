@@ -9,7 +9,8 @@ Your goal is finding waldos🔍 in 5 minutes⏱️!
 
 ![](./1.png)
 
-1. If you think you find the waldo in the screen, click it🖱️ and lock it.
+0. Look at the map and find Waldo!
+1. If you think you find Waldo in the screen, click it🖱️ and lock it.
 2. Click🖱️ the circle again to expose the whole horizontal line of screen.
 3. Click🖱️ the line again to expose the whole vertical line of screen.
 4. Click🖱️ the line again to expose the whole image.
