@@ -173,3 +173,7 @@ mainWindow.webContents.openDevTools()
 Button, LED <-> Arduino <-> Serial <-> Node.js
 
 Use Johnny-Five lib
+
+## ThreeJS
+
+- Stats: `import Stats from 'three/examples/jsm/libs/stats.module';`
