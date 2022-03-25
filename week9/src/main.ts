@@ -3,13 +3,13 @@ import * as THREE from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { ShaderMaterial } from 'three';
 
 let renderer: THREE.WebGLRenderer;
 let scene: THREE.Scene;
-let muffin: THREE.Object3D = new THREE.Object3D();
-let fruit: THREE.Object3D = new THREE.Object3D();
-let burger: THREE.Object3D = new THREE.Object3D();
+let shell: THREE.Object3D = new THREE.Object3D();
+let racquet: THREE.Object3D = new THREE.Object3D();
 let camera: THREE.PerspectiveCamera;
 let clock = new THREE.Clock();
 
@@ -93,61 +93,32 @@ function initScene() {
 	lightPoint.shadow.camera.near = cameraNear;
 	lightPoint.shadow.camera.far = cameraFar;
 
-	// add the muffin
-	const loader1 = new GLTFLoader();
-	loader1.load('./resources/jumbo_muffins/scene.gltf', (gltf: any) => {
-		muffin = gltf.scene;
-		muffin.castShadow = true;
-		muffin.scale.x = 10;
-		muffin.scale.y = 10;
-		muffin.scale.z = 10;
-		muffin.position.y = -3.6;
-		muffin.rotateY(-1);
-		scene.add(muffin);
+	// add the 3d shell
+	const loader1 = new OBJLoader();
+	loader1.load('./resources/shell.obj', (obj: any) => {
+		shell = obj;
+		shell.castShadow = true;
+		shell.scale.x = 0.02;
+		shell.scale.y = 0.02;
+		shell.scale.z = 0.02;
+		shell.position.x = -3;
+		shell.rotateY(-1);
+		scene.add(shell);
 	});
 
-	// add the still life
+	// add the racquet
 	const loader2 = new GLTFLoader();
-	loader2.load('./resources/nature/scene.gltf', (gltf: any) => {
-		fruit = gltf.scene;
-		fruit.castShadow = true;
-		fruit.scale.x = 10;
-		fruit.scale.y = 10;
-		fruit.scale.z = 10;
-		scene.add(fruit);
+	loader2.load('./resources/racquet.gltf', (gltf: any) => {
+		racquet = gltf.scene;
+		racquet.castShadow = true;
+		racquet.scale.x = 0.02;
+		racquet.scale.y = 0.02;
+		racquet.scale.z = 0.02;
+		racquet.position.x = 3;
+		racquet.position.y = 2;
+		racquet.rotateY(-1);
+		scene.add(racquet);
 	});
-
-	// load a texture
-	// let textureMaterial: THREE.Material;
-	// new THREE.TextureLoader().load('/resources/textures/uv_grid_opengl.jpg', function (texture) {
-
-	//     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-	//     texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-
-	//     exampleTexture = texture;
-
-	//     textureMaterial = new THREE.MeshBasicMaterial({ map: texture });
-	//     // cube.material = textureMaterial;
-
-	//     const loader = new GLTFLoader().setPath('/resources/models/');
-	//     loader.load('exampleModel.gltf', function (gltf) {
-	//         exampleModel = gltf.scene;
-
-	//         interface gltfMesh extends THREE.Object3D<THREE.Event> {
-	//             material: THREE.Material
-	//         }
-
-	//         console.log(exampleModel);
-
-	//         exampleModel.traverse((child: THREE.Object3D<THREE.Event>) => {
-	//             console.log(child);
-	//             console.log(child.type === "Mesh");
-	//             (child as gltfMesh).material = textureMaterial;
-	//         })
-
-	//         scene.add(exampleModel);
-	//     });
-	// });
 
 	const uniforms = {
 		u_time: { type: 'f', value: 1.0 },
@@ -206,9 +177,12 @@ function animate() {
 
 	let delta = clock.getDelta();
 
-	muffin.rotateY(0.001);
-	fruit.rotateY(0.001);
-	burger.rotateY(0.001);
+	shell.rotateY(0.001);
+	shell.rotateZ(0.001);
+	shell.rotateX(0.001);
+	racquet.rotateY(-0.001);
+	racquet.rotateZ(-0.001);
+	racquet.rotateX(-0.001);
 
 	shaderMat.uniforms.u_time.value += delta;
 
