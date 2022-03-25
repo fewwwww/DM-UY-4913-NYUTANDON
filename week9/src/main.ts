@@ -95,7 +95,7 @@ function initScene() {
 
 	// add the 3d shell
 	const loader1 = new OBJLoader();
-	loader1.load('./resources/shell.obj', (obj: any) => {
+	loader1.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week9/resources/shell.obj', (obj: any) => {
 		shell = obj;
 		shell.castShadow = true;
 		shell.scale.x = 0.02;
@@ -108,7 +108,7 @@ function initScene() {
 
 	// add the racquet
 	const loader2 = new GLTFLoader();
-	loader2.load('./resources/racquet.gltf', (gltf: any) => {
+	loader2.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week9/resources/racquet.gltf', (gltf: any) => {
 		racquet = gltf.scene;
 		racquet.castShadow = true;
 		racquet.scale.x = 0.02;
