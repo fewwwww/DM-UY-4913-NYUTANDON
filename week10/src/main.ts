@@ -100,7 +100,7 @@ function initScene() {
 
 	// add the dino
 	const loader1 = new OBJLoader();
-	loader1.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week9/resources/dino.obj', (obj: any) => {
+	loader1.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week10/resources/dino.obj', (obj: any) => {
 	// loader1.load('./resources/dino.obj', (obj: any) => {
 		dino = obj;
 		dino.castShadow = true;
@@ -114,7 +114,7 @@ function initScene() {
 
 	// add the cactus
 	const loader2 = new OBJLoader();
-	loader2.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week9/resources/cactus.obj', (obj: any) => {
+	loader2.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week10/resources/cactus.obj', (obj: any) => {
 	// loader2.load('./resources/cactus.obj', (obj: any) => {
 		cactus = obj;
 		cactus.castShadow = true;
