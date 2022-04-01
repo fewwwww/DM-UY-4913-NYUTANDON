@@ -3,12 +3,21 @@ import * as THREE from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { Raycaster, ShaderMaterial, Shading, Vector2 } from 'three';
 
 let renderer: THREE.WebGLRenderer;
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
 let clock = new THREE.Clock();
+
+let dino: THREE.Object3D = new THREE.Object3D();
+let cactus: THREE.Object3D = new THREE.Object3D();
+let isJump: boolean = false;
+let isFall: boolean = false;
+let isTouch: boolean = false;
+let extinctCount: number = 0;
+let extinctDOM = document.getElementsByTagName('span')[0]
 
 let lightAmbient: THREE.AmbientLight;
 let lightPoint: THREE.PointLight;
@@ -41,9 +50,10 @@ function initScene() {
 	scene = new THREE.Scene();
 
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-	camera.position.z = 5;
+	camera.position.z = 1;
+	camera.position.y = -5;
 
-	renderer = new THREE.WebGLRenderer();
+	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.shadowMap.enabled = true;
 	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 	renderer.setPixelRatio(window.devicePixelRatio);
@@ -88,58 +98,36 @@ function initScene() {
 	lightPoint.shadow.camera.near = cameraNear;
 	lightPoint.shadow.camera.far = cameraFar;
 
-	const cubeGeometry = new THREE.BoxGeometry();
-	const cubeMaterial = new THREE.MeshPhongMaterial({ color: 0xf0bbbb });
-	// cubeMaterial.wireframe = true;
-	cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-	cube.castShadow = true;
+	// add the dino
+	const loader1 = new OBJLoader();
+	loader1.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week9/resources/dino.obj', (obj: any) => {
+	// loader1.load('./resources/dino.obj', (obj: any) => {
+		dino = obj;
+		dino.castShadow = true;
+		dino.scale.x = 0.3;
+		dino.scale.y = 0.3;
+		dino.scale.z = 0.3;
+		dino.position.x = -5;
+		dino.position.z = -2;
+		scene.add(dino);
+	});
 
-	group = new THREE.Group();
-	group.add(cube);
-
-	cube.position.set(-2, 0, 0);
-
-	scene.add(group);
-
-	// load a texture
-	let textureMaterial: THREE.Material;
-	let textureLoader = new THREE.TextureLoader().setPath('../resources/textures/');
-	textureLoader.load('uv_grid_opengl.jpg', function (texture) {
-		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-		texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-
-		exampleTexture = texture;
-
-		textureMaterial = new THREE.MeshBasicMaterial({ map: texture });
-
-		cube.material = textureMaterial;
-
-		const modelLoader = new GLTFLoader().setPath('../resources/models/');
-		modelLoader.load('teapot.gltf', (gltf) => {
-			exampleModel = gltf.scene;
-			console.log(exampleModel);
-
-			exampleModel.scale.set(0.01, 0.01, 0.01);
-			exampleModel.position.x = 2;
-
-			const teapotMat = new THREE.MeshPhongMaterial({ color: 0x22ff22 });
-
-			exampleModel.traverse((child: THREE.Object3D<THREE.Event>) => {
-				console.log(child);
-				console.log(child.type === 'Mesh');
-				if (child.type === 'Mesh') {
-					// (child as gltfMesh).material = teapotMat;
-					(child as gltfMesh).material = textureMaterial;
-				}
-			});
-
-			// scene.add(exampleModel)
-			group.add(exampleModel);
-		});
+	// add the cactus
+	const loader2 = new OBJLoader();
+	loader2.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week9/resources/cactus.obj', (obj: any) => {
+	// loader2.load('./resources/cactus.obj', (obj: any) => {
+		cactus = obj;
+		cactus.castShadow = true;
+		cactus.scale.x = 0.3;
+		cactus.scale.y = 0.3;
+		cactus.scale.z = 0.2;
+		cactus.position.x = -5;
+		cactus.position.z = -2;
+		scene.add(cactus);
 	});
 
 	// // Add a plane
-	const geometryPlane = new THREE.PlaneBufferGeometry(6, 6, 10, 10);
+	const geometryPlane = new THREE.PlaneBufferGeometry(100, 12, 10, 10);
 	const materialPlane = new THREE.MeshPhongMaterial({
 		color: 0x666666,
 		side: THREE.DoubleSide,
@@ -200,6 +188,25 @@ function initListeners() {
 				win.document.write(`<img src='${src}' width='${domElement.width}' height='${domElement.height}'>`);
 				break;
 
+			case ' ':
+				if (!isJump && !isFall) {
+					isJump = true;
+				}
+				break
+			case 'ArrowUp':
+				if (!isJump && !isFall) {
+					isJump = true;
+				}
+				break
+			case 'ArrowRight':
+				dino.position.x += 0.3;
+				break
+			case 'ArrowLeft':
+				dino.position.x -= 0.3;
+				break
+			case 'ArrowDown':
+				// intended
+				dino.position.z -= 0.1;
 			default:
 				break;
 		}
@@ -212,37 +219,56 @@ function onWindowResize() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+function fall(dino: THREE.Object3D) {
+	if (dino.position.z < -2) {
+		isFall = false;
+	} else {
+		dino.position.z -= 0.05;
+	}
+}
+
+function jump(dino: THREE.Object3D) {
+	if (dino.position.z > 2) {
+		isJump = false;
+		isFall = true;
+	} else {
+		dino.position.z += 0.03;
+	}
+}
+
+function touch(dino: THREE.Object3D, cactus: THREE.Object3D) {
+	// dino.position.z is determined by the height of cactus
+	if (cactus.position.x + 1 <= dino.position.x && cactus.position.x + 3.6 >= dino.position.x && dino.position.z < -1) {
+		extinctCount += 1
+	}
+}
 
 function animate() {
 	requestAnimationFrame(() => {
 		animate();
 	});
 
+	touch(dino, cactus)
+
+	extinctDOM.innerHTML = String(extinctCount)
+
+	if (isJump) {
+		jump(dino);
+	}
+
+	if (isFall) {
+		fall(dino);
+	}
+
 	let delta = clock.getDelta();
 
 	shaderMat.uniforms.u_time.value += delta;
 
-	cube.rotation.x += 0.01;
-	cube.rotation.y += 0.01;
-
-	group.rotateZ(delta);
-	group.position.set(Math.sin(clock.getElapsedTime()) * 2, 0, 0);
-
 	const vertArray = plane.geometry.attributes.position;
 	for (let i = 0; i < vertArray.count; i++) {
-		vertArray.setZ(i, Math.sin(clock.getElapsedTime() + i - vertArray.count / 2) * 0.5 + Math.cos(clock.getElapsedTime() - i) * 0.5);
+		vertArray.setZ(i, Math.sin(clock.getElapsedTime() + i - vertArray.count / 2) * 0.03 + Math.cos(clock.getElapsedTime() - i) * 0.03);
 	}
 	plane.geometry.attributes.position.needsUpdate = true;
-
-	if (exampleModel != undefined) {
-		exampleModel.rotateX(0.01);
-		exampleModel.rotateY(0.01);
-	}
-
-	if (exampleTexture) {
-		exampleTexture.center.set(0.5, 0.5);
-		exampleTexture.rotation += delta;
-	}
 
 	if (stats) stats.update();
 
@@ -252,7 +278,6 @@ function animate() {
 }
 
 main();
-
 
 interface MeshObj extends THREE.Object3D<THREE.Event> {
 	material: THREE.MeshPhongMaterial;
