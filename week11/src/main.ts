@@ -2,8 +2,8 @@ import './style.scss';
 import * as THREE from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { Raycaster, ShaderMaterial, Shading, Vector2 } from 'three';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { ShaderMaterial } from 'three';
 
 let renderer: THREE.WebGLRenderer;
 let scene: THREE.Scene;
@@ -12,11 +12,15 @@ let clock = new THREE.Clock();
 
 let dino: THREE.Object3D = new THREE.Object3D();
 let cactus: THREE.Object3D = new THREE.Object3D();
+let cactuses: Array<THREE.Object3D> = [];
+let cactusesPositionX: Array<number> = [20];
+
 let isJump: boolean = false;
 let isFall: boolean = false;
-let isTouch: boolean = false;
+let isStart: boolean = false;
 let extinctCount: number = 0;
-let extinctDOM = document.getElementsByTagName('span')[0]
+const extinctDOM = document.getElementsByTagName('span')[0];
+const startDOM = document.getElementById('start');
 
 let lightAmbient: THREE.AmbientLight;
 let lightPoint: THREE.PointLight;
@@ -24,11 +28,7 @@ let lightPoint: THREE.PointLight;
 let controls: OrbitControls;
 let stats: any;
 
-let cube: THREE.Mesh;
 let plane: THREE.Mesh;
-let group: THREE.Group;
-let exampleModel: THREE.Group;
-let exampleTexture: THREE.Texture;
 
 import vertexShader from '../resources/shaders/shader.vert?raw';
 import fragmentShader from '../resources/shaders/shader.frag?raw';
@@ -43,6 +43,12 @@ function main() {
 function initStats() {
 	stats = new (Stats as any)();
 	document.body.appendChild(stats.dom);
+}
+
+function initCactusesPositionX() {
+	for (let i = 1; i < 200; i++) {
+		cactusesPositionX.push(cactusesPositionX[cactusesPositionX.length - 1] + Math.floor(Math.random() * (35 - 15) + 15));
+	}
 }
 
 function initScene() {
@@ -65,11 +71,6 @@ function initScene() {
 	lightAmbient = new THREE.AmbientLight(0x333333);
 	scene.add(lightAmbient);
 
-	// lightAmbient = new THREE.AmbientLight(0xffffff);
-	// scene.add(lightAmbient);
-
-	// Add a point light to add shadows
-	// https://github.com/mrdoob/three.js/pull/14087#issuecomment-431003830
 	const shadowIntensity = 0.25;
 
 	lightPoint = new THREE.PointLight(0xffffff);
@@ -99,8 +100,8 @@ function initScene() {
 
 	// add the dino
 	const loader1 = new OBJLoader();
-	loader1.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week10/resources/dino.obj', (obj: any) => {
-	// loader1.load('./resources/dino.obj', (obj: any) => {
+	// loader1.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week10/resources/dino.obj', (obj: any) => {
+	loader1.load('./resources/dino.obj', (obj: any) => {
 		dino = obj;
 		dino.castShadow = true;
 		dino.scale.x = 0.3;
@@ -111,19 +112,24 @@ function initScene() {
 		scene.add(dino);
 	});
 
+	initCactusesPositionX();
 	// add the cactus
 	const loader2 = new OBJLoader();
-	loader2.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week10/resources/cactus.obj', (obj: any) => {
-	// loader2.load('./resources/cactus.obj', (obj: any) => {
-		cactus = obj;
-		cactus.castShadow = true;
-		cactus.scale.x = 0.3;
-		cactus.scale.y = 0.3;
-		cactus.scale.z = 0.2;
-		cactus.position.x = -5;
-		cactus.position.z = -2;
-		scene.add(cactus);
-	});
+	for (let x of cactusesPositionX) {
+		// loader2.load('https://raw.githubusercontent.com/fewwwww/DM-UY-4913-NYUTANDON/main/week10/resources/cactus.obj', (obj: any) => {
+		loader2.load('./resources/cactus.obj', (obj: any) => {
+			cactus = obj;
+			cactus.castShadow = true;
+			cactus.scale.x = 0.3;
+			cactus.scale.y = 0.3;
+			cactus.scale.z = 0.2;
+			cactus.position.x = x - 5;
+			cactus.position.z = -2;
+			cactuses.push(cactus);
+			scene.add(cactus);
+		});
+	}
+	console.log(cactuses);
 
 	// // Add a plane
 	const geometryPlane = new THREE.PlaneBufferGeometry(100, 12, 10, 10);
@@ -188,24 +194,27 @@ function initListeners() {
 				break;
 
 			case ' ':
+				if (!isStart) {
+					isStart = true;
+				}
 				if (!isJump && !isFall) {
 					isJump = true;
 				}
-				break
+				break;
 			case 'ArrowUp':
 				if (!isJump && !isFall) {
 					isJump = true;
 				}
-				break
-			case 'ArrowRight':
-				dino.position.x += 0.3;
-				break
-			case 'ArrowLeft':
-				dino.position.x -= 0.3;
-				break
-			case 'ArrowDown':
-				// intended
-				dino.position.z -= 0.1;
+				break;
+			// case 'ArrowRight':
+			// 	dino.position.x += 0.3;
+			// 	break
+			// case 'ArrowLeft':
+			// 	dino.position.x -= 0.3;
+			// 	break
+			// case 'ArrowDown':
+			// 	// intended
+			// 	dino.position.z -= 0.1;
 			default:
 				break;
 		}
@@ -222,7 +231,7 @@ function fall(dino: THREE.Object3D) {
 	if (dino.position.z < -2) {
 		isFall = false;
 	} else {
-		dino.position.z -= 0.05;
+		dino.position.z -= 0.07;
 	}
 }
 
@@ -235,10 +244,19 @@ function jump(dino: THREE.Object3D) {
 	}
 }
 
-function touch(dino: THREE.Object3D, cactus: THREE.Object3D) {
+function touch(dino: THREE.Object3D, cactuses: Array<THREE.Object3D>) {
 	// dino.position.z is determined by the height of cactus
-	if (cactus.position.x + 1 <= dino.position.x && cactus.position.x + 3.6 >= dino.position.x && dino.position.z < -1) {
-		extinctCount += 1
+	for (let cactus of cactuses) {
+		if (cactus.position.x + 1 <= dino.position.x && cactus.position.x + 3.6 >= dino.position.x && dino.position.z < -1) {
+			extinctCount += 1;
+		}
+	}
+}
+
+function start(speed: any) {
+	startDOM.style.display = 'none';
+	for (let cactus of cactuses) {
+		cactus.position.x -= speed;
 	}
 }
 
@@ -247,9 +265,20 @@ function animate() {
 		animate();
 	});
 
-	touch(dino, cactus)
+	let speed = (clock.elapsedTime * 0.001).toFixed(2)
+	if (speed < 0.02) {
+		speed = 0.03
+	}
+	if (speed > 0.1) {
+		speed = 0.1
+	}
+	if (isStart) {
+		start(speed);
+	}
 
-	extinctDOM.innerHTML = String(extinctCount)
+	touch(dino, cactuses);
+
+	extinctDOM.innerHTML = String(extinctCount);
 
 	if (isJump) {
 		jump(dino);
@@ -277,15 +306,3 @@ function animate() {
 }
 
 main();
-
-interface MeshObj extends THREE.Object3D<THREE.Event> {
-	material: THREE.MeshPhongMaterial;
-}
-
-interface gltfMesh extends THREE.Object3D<THREE.Event> {
-	material: THREE.Material;
-}
-
-interface ColorMaterial extends THREE.Material {
-	color: THREE.Color;
-}
