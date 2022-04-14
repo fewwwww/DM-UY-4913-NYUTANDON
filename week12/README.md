@@ -70,3 +70,19 @@ Like [The Block Website](https://www.theblockcrypto.com), [Pianity Website](http
 4.23 - 4.27: Complete all the visual and interactive components
 
 4.28 -  DDL: Receive feedback and combine my original music to the project
+
+## Some random design choices
+
+- Why make font bold when hover?: Because when the bg is black and font is white, the text looks thinner.
+
+- Why play button in the middle?: So that user will move away the cursor to see the full image. And they will find out actually mouse movement will trigger camera movement.
+
+- Why not a perfect sphere when playing?: It looks more aggressive and dynamic with more variations.
+
+## References
+
+Some code snippets and logic are from: [this blog](https://medium.com/@mag_ops/music-visualiser-with-three-js-web-audio-api-b30175e7b5ba) (but the version the author used is not working, so all the codes are rewritten when I code my project).
+
+Design is kinda inspired by [this project](https://jojo.ninja/fluctus/)
+
+Music all be me.
