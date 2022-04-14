@@ -69,7 +69,9 @@ Like [The Block Website](https://www.theblockcrypto.com), [Pianity Website](http
 
 4.23 - 4.27: Complete all the visual and interactive components
 
-4.28 -  DDL: Receive feedback and combine my original music to the project
+4.28 -  DDL: Receive feedback and combine my original music to the project.
+
+DDL  -  ...: Write a blog post about the project
 
 ## Some random design choices
 
